@@ -12,7 +12,7 @@ const app = express();
 app.use(cors()); // Enable CORS to allow requests from the frontend
 
 app.use(cors({
-    origin : 'https://management-frontend-zeta.vercel.app/'
+    origin : 'https://management-frontend-zeta.vercel.app'
 }))
 
 app.use(express.json());
