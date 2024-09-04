@@ -7,11 +7,31 @@ const router = express.Router();
 
 // Register new user (Admin)
 router.post('/register', authMiddleware, authorizeRole('admin'), async (req, res) => {
-  const { username, password, role } = req.body;
-  const user = new User({ username, password, role });
-  await user.save();
-  res.status(201).json(user);
+
+  const {username, password, role} = req.body;
+
+  if (!['admin', 'user', 'stockManager'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role' });
+    }
+
+
+  const user = await User.create({username, password, role})
+  
+  if (user) {
+      res.status(201).json({
+        _id : user._id,
+            username : user.username,
+            password : user.password,
+            role : user.role,
+            token : token(user._id)
+        })
+
+    } else {
+        res.status(400).json({message: 'Invalid User Data'})
+    }
+
 });
+
 
 const token = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -35,12 +55,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-//   if (!user || !(await bcrypt.compare(password, user.password))) {
-//     return res.status(400).json({ message: 'Invalid credentials' });
-//   }
-//   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-//   res.json({ token });
-// });
 
 // Get all users (Admin)
 router.get('/', authMiddleware, authorizeRole('admin'), async (req, res) => {
