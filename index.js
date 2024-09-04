@@ -12,6 +12,10 @@ const app = express();
 app.use(express.json());
 app.use(cors()); // Enable CORS to allow requests from the frontend
 
+app.get('/', (req, res) => {
+    res.send('Backend Working')
+})
+
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
