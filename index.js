@@ -9,8 +9,13 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(express.json());
 app.use(cors()); // Enable CORS to allow requests from the frontend
+
+app.use(cors({
+    origin : 'https://management-frontend-zeta.vercel.app/'
+}))
+
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('Backend Working')
